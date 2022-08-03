@@ -17,19 +17,27 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
   void _notificationLoaded(
       NotificationReceivedEvent event, Emitter<NotificationState> emit) async {
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    // if (initialMessage != null) {
+    //   print('Inside _notificationLoaded');
 
-    if (initialMessage != null) {
+    if (event.notification.body != null) {
+      print('Inside _notificationLoaded');
       emit(NotificationLoaded(
-        title: initialMessage.data['title'],
-        body: initialMessage.data['body'],
-        dataTitle: initialMessage.data['title'],
-        dataBody: initialMessage.data['body'],
-        url: initialMessage.data['url'],
+        title: event.notification.title!,
+        body: event.notification.body!,
+        dataTitle: event.notification.title!,
+        dataBody: event.notification.body!,
+        // url: event.notification.url,
       ));
     } else {
+      print('Inside else _notificationLoaded');
       emit(NotificationInitial());
     }
+
+    // } else {
+    //   print('Inside else _notificationLoaded');
+    //   print(event.toString());
+    //   emit(NotificationInitial());
+    // }
   }
 }

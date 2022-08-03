@@ -11,6 +11,8 @@ import '../models/notification_badge.dart';
 import '../widget/notification_widget.dart';
 
 class HomePageNotification extends StatefulWidget {
+  const HomePageNotification({super.key});
+
   @override
   _HomePageNotificationState createState() => _HomePageNotificationState();
 }
@@ -42,7 +44,7 @@ class _HomePageNotificationState extends State {
         body: message.data['body'],
         dataTitle: message.data['title'],
         dataBody: message.data['body'],
-        url: message.data['url'],
+        // url: message.data['url'],
       );
 
       // bloc.add(CheckIntitialMessage());
@@ -82,7 +84,9 @@ class _HomePageNotificationState extends State {
             const SizedBox(height: 16.0),
             NotificationBadge(totalNotifications: _totalNotifications),
             const SizedBox(height: 16.0),
-            _notificationInfo != null ? const NotificationWidget() : Container(),
+            _notificationInfo != null
+                ? NotificationWidget(PushNotification: _notificationInfo)
+                : Container(),
           ],
         ),
       ),
@@ -97,9 +101,9 @@ class _HomePageNotificationState extends State {
     // 2. Instantiate Firebase Messaging
     _messaging = FirebaseMessaging.instance;
 
-    _messaging.getToken().then((token) {
-      print('token: $token');
-    });
+    // _messaging.getToken().then((token) {
+    //   print('token: $token');
+    // });
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -123,22 +127,8 @@ class _HomePageNotificationState extends State {
           body: message.notification?.body,
           dataTitle: message.data['title'],
           dataBody: message.data['body'],
-          url: message.data['image'],
+          // url: message.data['image'],
         );
-
-        bloc.add(
-          NotificationReceivedEvent(notification: notification),
-        );
-
-        // context.read<NotificationBloc>().add(
-        //   CheckIntitialMessage(
-        //     title: message.data['title'],
-        //     body: message.data['body'],
-        //     dataTitle: message.data['title'],
-        //     dataBody: message.data['body'],
-        //     url: message.data['image'],
-        //   ),
-        // );
 
         setState(() {
           _notificationInfo = notification;
@@ -147,10 +137,16 @@ class _HomePageNotificationState extends State {
 
         if (_notificationInfo != null) {
           // For displaying the notification as an overlay
+          print('Event is triggered');
+          bloc.add(
+            NotificationReceivedEvent(notification: notification),
+          );
+          print('Event is triggered after adding to bloc');
+
           showSimpleNotification(
-            Text(bloc.state.props[0].toString()),
+            Text(_notificationInfo!.title!),
             leading: NotificationBadge(totalNotifications: _totalNotifications),
-            subtitle: Text(bloc.state.props[1].toString()),
+            subtitle: Text(_notificationInfo!.body!),
             background: Colors.cyan.shade700,
             duration: const Duration(seconds: 2),
           );
@@ -168,6 +164,8 @@ class _HomePageNotificationState extends State {
         await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
+      print('initialMessage: $initialMessage');
+
       PushNotification notification = PushNotification(
         title: initialMessage.notification?.title,
         body: initialMessage.notification?.body,

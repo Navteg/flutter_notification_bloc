@@ -15,17 +15,17 @@ class NotificationLoaded extends NotificationState {
   final String body;
   final String dataTitle;
   final String dataBody;
-  final String url;
+
 
   const NotificationLoaded(
       {required this.title,
       required this.body,
       required this.dataTitle,
       required this.dataBody,
-      required this.url});
+      });
 
   @override
-  List<Object> get props => [title, body, dataTitle, dataBody, url];
+  List<Object> get props => [title, body, dataTitle, dataBody];
 }
 
 

@@ -89,13 +89,13 @@ class _HomePageState extends State {
                         fontSize: 16.0,
                       ),
                     ),
-                    Text(
-                      'URL: ${_notificationInfo!.url}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
+                    // Text(
+                    //   'URL: ${_notificationInfo!.url}',
+                    //   style: const TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //     fontSize: 16.0,
+                    //   ),
+                    // ),
                   ],
                 )
               : Container(),
@@ -140,7 +140,7 @@ class _HomePageState extends State {
           body: message.notification?.body,
           dataTitle: message.data['title'],
           dataBody: message.data['body'],
-          url: message.data['image'],
+          // url: message.data['image'],
         );
 
         setState(() {
