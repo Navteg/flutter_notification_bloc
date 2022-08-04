@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_notification/bloc/notification_bloc.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'view/home_view.dart';
 import 'view/home_view_notification.dart';
@@ -19,15 +21,18 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport(
-      child: MaterialApp(
-        title: 'Notify',
-        theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
+    return BlocProvider(
+      create: (context) => NotificationBloc(),
+      child: OverlaySupport(
+        child: MaterialApp(
+          title: 'Notify',
+          theme: ThemeData(
+            primarySwatch: Colors.deepPurple,
+          ),
+          debugShowCheckedModeBanner: false,
+          home: const HomePageNotification(),
         ),
-        debugShowCheckedModeBanner: false,
-        home: const HomePageNotification(),
-        ),
+      ),
     );
   }
 }

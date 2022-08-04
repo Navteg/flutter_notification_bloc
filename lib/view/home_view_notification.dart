@@ -39,13 +39,21 @@ class _HomePageNotificationState extends State {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('onMessageOpenedApp');
 
+
       PushNotification notification = PushNotification(
-        title: message.data['title'],
-        body: message.data['body'],
-        dataTitle: message.data['title'],
-        dataBody: message.data['body'],
+        title: message.notification?.title,
+        body: message.notification?.body,
         // url: message.data['url'],
       );
+
+      print('on Message Opened App: ${notification.title} | ${notification.dataTitle}');
+
+      BlocProvider.of<NotificationBloc>(context).add(
+        NotificationReceivedEvent(
+          notification: notification,
+        ),
+      );
+      
 
       // bloc.add(CheckIntitialMessage());
 
@@ -63,34 +71,38 @@ class _HomePageNotificationState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NotificationBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Notify'),
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'App for capturing Firebase Push Notifications',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            NotificationBadge(totalNotifications: _totalNotifications),
-            const SizedBox(height: 16.0),
-            _notificationInfo != null
-                ? NotificationWidget(PushNotification: _notificationInfo)
-                : Container(),
-          ],
-        ),
+    return (Scaffold(
+      appBar: AppBar(
+        title: const Text('Notify'),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-    );
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'App for capturing Firebase Push Notifications',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          NotificationBadge(totalNotifications: _totalNotifications),
+          const SizedBox(height: 16.0),
+          _notificationInfo != null
+              ? Column(
+                  children: [
+                    NotificationWidget(
+                      notification: _notificationInfo,
+                    ),
+                    // Text('Notification Title ${_notificationInfo!.dataTitle ?? _notificationInfo!.title}'),
+                  ],
+                )
+              : Container(),
+        ],
+      ),
+    ));
   }
 
   void registerNotification() async {
@@ -101,9 +113,9 @@ class _HomePageNotificationState extends State {
     // 2. Instantiate Firebase Messaging
     _messaging = FirebaseMessaging.instance;
 
-    // _messaging.getToken().then((token) {
-    //   print('token: $token');
-    // });
+    _messaging.getToken().then((token) {
+      print('token: $token');
+    });
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -126,9 +138,11 @@ class _HomePageNotificationState extends State {
           title: message.notification?.title,
           body: message.notification?.body,
           dataTitle: message.data['title'],
-          dataBody: message.data['body'],
+          dataBody: message.notification?.body,
           // url: message.data['image'],
         );
+
+        print('on Message: ${notification.title} | ${notification.dataTitle}');
 
         setState(() {
           _notificationInfo = notification;
@@ -138,9 +152,11 @@ class _HomePageNotificationState extends State {
         if (_notificationInfo != null) {
           // For displaying the notification as an overlay
           print('Event is triggered');
-          bloc.add(
+
+          BlocProvider.of<NotificationBloc>(context).add(
             NotificationReceivedEvent(notification: notification),
           );
+
           print('Event is triggered after adding to bloc');
 
           showSimpleNotification(
@@ -169,6 +185,8 @@ class _HomePageNotificationState extends State {
       PushNotification notification = PushNotification(
         title: initialMessage.notification?.title,
         body: initialMessage.notification?.body,
+        dataTitle: initialMessage.notification?.title,
+        dataBody: initialMessage.notification?.body,
       );
 
       setState(() {

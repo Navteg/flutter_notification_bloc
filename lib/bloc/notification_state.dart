@@ -8,7 +8,10 @@ abstract class NotificationState extends Equatable {
   List<Object> get props => [];
 }
 
-class NotificationInitial extends NotificationState {}
+class NotificationInitial extends NotificationState {
+}
+
+
 
 class NotificationLoaded extends NotificationState {
   final String title;
@@ -16,13 +19,12 @@ class NotificationLoaded extends NotificationState {
   final String dataTitle;
   final String dataBody;
 
-
-  const NotificationLoaded(
-      {required this.title,
-      required this.body,
-      required this.dataTitle,
-      required this.dataBody,
-      });
+  const NotificationLoaded({
+    required this.title,
+    required this.body,
+    required this.dataTitle,
+    required this.dataBody,
+  });
 
   @override
   List<Object> get props => [title, body, dataTitle, dataBody];

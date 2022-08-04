@@ -13,6 +13,11 @@ part 'notification_state.dart';
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationInitial()) {
     on<NotificationReceivedEvent>(_notificationLoaded);
+    on<CheckIntitialMessage>(_checkIntitialMessage);
+  }
+
+  void _checkIntitialMessage (CheckIntitialMessage event, Emitter emit) {
+    emit(NotificationInitial());
   }
 
   void _notificationLoaded(
@@ -20,13 +25,13 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     // if (initialMessage != null) {
     //   print('Inside _notificationLoaded');
 
-    if (event.notification.body != null) {
+    if (event.notification?.body != null) {
       print('Inside _notificationLoaded');
       emit(NotificationLoaded(
-        title: event.notification.title!,
-        body: event.notification.body!,
-        dataTitle: event.notification.title!,
-        dataBody: event.notification.body!,
+        title: event.notification!.title!,
+        body: event.notification!.body!,
+        dataTitle: event.notification!.title!,
+        dataBody: event.notification!.body!,
         // url: event.notification.url,
       ));
     } else {

@@ -3,13 +3,12 @@ part of 'notification_bloc.dart';
 @immutable
 abstract class NotificationEvent {}
 
-class CheckIntitialMessage extends NotificationEvent {
-  CheckIntitialMessage();
-}
+class CheckIntitialMessage extends NotificationEvent {}
 
 class NotificationReceivedEvent extends NotificationEvent {
-  final PushNotification notification;
-  NotificationReceivedEvent({required this.notification});
+  PushNotification? notification;
+
+  NotificationReceivedEvent({this.notification});
 }
 
 // class registerForPushNotifications extends NotificationEvent {
